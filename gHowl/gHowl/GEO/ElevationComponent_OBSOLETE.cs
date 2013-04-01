@@ -12,13 +12,13 @@ using gHowl.Properties;
 
 namespace gHowl.Geo
 {
-    public class ElevationComponent : GH_Component
+    public class ElevationComponent_OBSOLETE : GH_Component
     {
-        public ElevationComponent() : base("Get Elevation", "E", "Given WGS84 coordinates, this component will return the elevation(s)", "gHowl", "GEO") { }
+        public ElevationComponent_OBSOLETE() : base("Get Elevation", "E", "Given WGS84 coordinates, this component will return the elevation(s)", "gHowl", "GEO") { }
 
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddPointParameter("Geo Points", "P", "WSG84 Decimal Degree formatted points", GH_ParamAccess.list);
+            pManager.Register_PointParam("Geo Points", "P", "WSG84 Decimal Degree formatted points", GH_ParamAccess.list);
             pManager[0].Optional = false;
         }
 
@@ -33,32 +33,27 @@ namespace gHowl.Geo
             if (!DA.GetDataList<GH_Point>(0,inPts)) { return; }
             int cnt = 0;
             string preUrl = "http://maps.googleapis.com/maps/api/elevation/xml?locations=";
-            string postUrl = "&sensor=false"; //13 Characters
-            System.Text.StringBuilder url = new System.Text.StringBuilder();
-   
+            string postUrl = "&sensor=false";
+            StringBuilder url = new StringBuilder();
+            StringBuilder sb;
             url.Append(preUrl);
             List<double> outPts = new List<double>();
-            int l;
-
+ 
             for (int i = 0; i < inPts.Count; i++)
             {
-                l = url.Length;
-                l = l + postUrl.Length;
+                url.Append(inPts[i].Value.Y);
+                url.Append(",");
+                url.Append(inPts[i].Value.X);
+                cnt++;
 
-
-                if (l > 1870 || i == (inPts.Count - 1))
+                //need a better way to throtle this condition
+                //Elevations API URLs can only be a Maximum of 2048 characters before URL Encoding
+                
+                if (cnt == 50 || i == inPts.Count - 1) 
                 {
-                    if (i == inPts.Count - 1)
-                    {
-         
-                        url.Append(inPts[i].Value.Y);
-                        url.Append(",");
-                        url.Append(inPts[i].Value.X);
-                        url.Append("|");
-                    }
-                    url.Remove(url.Length - 1, 1);
 
                     url.Append(postUrl);
+                    //Print((url.ToString().Length).ToString());
 
                     cnt = 0;
                     try
@@ -68,7 +63,8 @@ namespace gHowl.Geo
                         Stream receiveStream = HttpWResp.GetResponseStream();
                         System.Text.Encoding encode = System.Text.Encoding.GetEncoding("utf-8");
                         StreamReader readStream = new StreamReader(receiveStream, encode);
-                       
+
+                        //Print("Response stream received");
                         string xmlData = readStream.ReadToEnd();
                         XmlTextReader reader = new XmlTextReader(new StringReader(xmlData));
 
@@ -76,7 +72,7 @@ namespace gHowl.Geo
                         {
                             if (reader.NodeType == XmlNodeType.Element && reader.Name == "status")
                             {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, reader.ReadElementContentAsString());
+                                //Print(reader.ReadElementContentAsString());
                             }
                             if (reader.NodeType == XmlNodeType.Element && reader.Name == "elevation")
                             {
@@ -84,43 +80,41 @@ namespace gHowl.Geo
                             }
                         }
 
+
                         reader.Close();
                         HttpWResp.Close();
+                        // Releases the resources of the Stream.
                         readStream.Close();
 
-                        url.Clear();
+                        //allUrl.Add(url.ToString());
+
+                        url.Remove(0, url.Length);
                         url.Append(preUrl);
+
+
                     }
                     catch (Exception ex)
                     {
-                        
-                        AddRuntimeMessage(GH_RuntimeMessageLevel.Error,"Exception: " + ex.Message);
-                        url.Clear();
-
-                        url.Append(preUrl);
+                        sb = new System.Text.StringBuilder(ex.Message);
+                        //Print("Exception: " + sb.ToString());
                     }
+
                 }
                 else
                 {
-
+                    url.Append("|");
                 }
 
-                url.Append(inPts[i].Value.Y);
-                url.Append(",");
-                url.Append(inPts[i].Value.X);
-                url.Append("|");
-                cnt++;
             }
-         
+           // A = allElev;
             DA.SetDataList(0, outPts);
-
 
 
         }
 
         public override Guid ComponentGuid
         {
-            get { return new Guid("{4c3894ec-8fb3-4a33-910f-5c3cd2614288}"); }
+            get { return new Guid("{fd618634-b121-4237-86ef-9074040e2a59}"); }
         }
 
         protected override Bitmap Icon
@@ -128,6 +122,14 @@ namespace gHowl.Geo
             get
             {
                 return Resources.gHowl_elev;
+            }
+        }
+
+        public override GH_Exposure Exposure
+        {
+            get
+            {
+                return GH_Exposure.hidden;
             }
         }
     }

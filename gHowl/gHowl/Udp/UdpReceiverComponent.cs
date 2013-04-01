@@ -97,7 +97,7 @@ namespace gHowl.Udp
             _serviceMessage = "";
             if (address == null)
             {
-                parsedAdd = IPAddress.Loopback;
+                parsedAdd = IPAddress.Any;
             }
             else if (!IPAddress.TryParse(address.Value, out parsedAdd))
             {
