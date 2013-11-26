@@ -52,7 +52,8 @@ namespace gHowl.Xml {
 			if (File.Exists(XmlPath)) {
 				InputType = XmlInputType.File;
 			}
-			else if (XmlPath.Contains("http://")) {
+            else if (XmlPath.Contains("http://") || XmlPath.Contains("https://"))
+            {
 				InputType = XmlInputType.WebAddress;
 			}
 			else if (XmlPath.Contains("<")) {
