@@ -8,6 +8,7 @@ using System.IO;
 using System.Xml;
 using System.Drawing;
 using gHowl.Properties;
+using Grasshopper;
 
 
 namespace gHowl.Geo
@@ -76,7 +77,8 @@ namespace gHowl.Geo
                         {
                             if (reader.NodeType == XmlNodeType.Element && reader.Name == "status")
                             {
-                                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, reader.ReadElementContentAsString());
+                               // AddRuntimeMessage(GH_RuntimeMessageLevel., reader.ReadElementContentAsString());
+                                Instances.DocumentEditor.SetStatusBarEvent(new GH_RuntimeMessage("API Status "+reader.ReadElementContentAsString()));
                             }
                             if (reader.NodeType == XmlNodeType.Element && reader.Name == "elevation")
                             {
