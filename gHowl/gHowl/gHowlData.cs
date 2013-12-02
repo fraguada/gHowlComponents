@@ -26,7 +26,7 @@ namespace gHowl
         {
             get
             {
-                return "r51";
+                return "r52_wip";
             }
         }
 
@@ -57,7 +57,7 @@ namespace gHowl
         {
             get
             {
-                return GH_LibraryLicense.beta;
+                return GH_LibraryLicense.opensource;
             }
         }
     }

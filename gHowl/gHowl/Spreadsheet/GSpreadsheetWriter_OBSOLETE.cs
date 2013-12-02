@@ -13,40 +13,13 @@ namespace gHowl.Spreadsheet
 {
 
 
-     class CellAddress
-    {
-        public uint Row;
-        public uint Col;
-        public string IdString;
-        public string DataString;
-
-        /**
-         * Constructs a CellAddress representing the specified {@code row} and
-         * {@code col}. The IdString will be set in 'RnCn' notation.
-         */
-        public CellAddress(uint row, uint col)
-        {
-            this.Row = row;
-            this.Col = col;
-            this.IdString = string.Format("R{0}C{1}", row, col);
-        }
-
-        public CellAddress(uint row, uint col, string data)
-        {
-            this.Row = row;
-            this.Col = col;
-            this.DataString = data;
-            this.IdString = string.Format("R{0}C{1}", row, col);
-        }
-    }
-
-
-    public class GSpreadsheetWriter : GH_Component
+    
+    public class GSpreadsheetWriter_OBSOLETE : GH_Component
     {
         /// <summary>
         /// Initializes a new instance of the MyComponent2 class.
         /// </summary>
-        public GSpreadsheetWriter()
+        public GSpreadsheetWriter_OBSOLETE()
             : base("Google Spreadsheet Writer", "#W", "Write spreadsheet data to Google", "gHowl", "#")
         {
         }
@@ -255,11 +228,18 @@ namespace gHowl.Spreadsheet
         {
             get
             {
-                //You can add image files to your project resources and access them like this:
+                //You can add image files to your project resources and access them like this:             
                 // return Resources.IconForThisComponent;
                 return null;
             }
         }
+
+
+        public override GH_Exposure Exposure
+        {
+            get { return GH_Exposure.hidden; }
+        }
+
 
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.

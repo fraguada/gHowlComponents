@@ -10,10 +10,10 @@ using gHowl.Properties;
 
 namespace gHowl.Spreadheet
 {
-    public class SpreadsheetWriter : GH_Component, IGH_VarParamComponent
+    public class SpreadsheetWriter_OBSOLETE : GH_Component, IGH_VarParamComponent
     {
-        public SpreadsheetWriter()
-            : base("Spreadsheet Writer", "#W", "Write GH Data to a Spreadsheet", "gHowl", "#")
+        public SpreadsheetWriter_OBSOLETE()
+            : base("Spreadsheet Writer [OBSOLETE]", "#W", "Write GH Data to a Spreadsheet", "gHowl", "#")
         {
         }
 
@@ -26,13 +26,11 @@ namespace gHowl.Spreadheet
             pManager[1].Optional = false;
 
         }
-
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
             pManager.Register_GenericParam("Info", "I", "Information Message");
 
         }
-
         protected override void SolveInstance(IGH_DataAccess DA)
         {
             string path = null;
@@ -71,24 +69,20 @@ namespace gHowl.Spreadheet
         {
             get { return new Guid("{70e5b445-4391-4609-a822-0834fc544fa3}"); }
         }
-
         public IGH_Param ConstructVariable(GH_VarParamEventArgs e)
         {
             Param_GenericObject param = new Param_GenericObject();
             this.FixParameterFields(param, e.Index);
             return param;
         }
-
         public bool IsInputVariable
         {
             get { return true; }
         }
-
         public bool IsOutputVariable
         {
             get { return false; }
         }
-
         public bool IsVariableParam(GH_VarParamEventArgs e)
         {
             if (e.Side == GH_VarParamSide.Output)
@@ -101,7 +95,6 @@ namespace gHowl.Spreadheet
             }
             return true;
         }
-
         public void ManagerConstructed(GH_VarParamSide side, Grasshopper.GUI.GH_VariableParameterManager manager)
         {
         }
@@ -124,7 +117,6 @@ namespace gHowl.Spreadheet
             param.Access = GH_ParamAccess.tree;
             param.Optional = true;
         }
-
         public void ParametersModified(GH_VarParamSide side)
         {
             if (side == GH_VarParamSide.Input)
@@ -139,7 +131,10 @@ namespace gHowl.Spreadheet
 
 
         }
-
+        public override GH_Exposure Exposure
+        {
+            get { return GH_Exposure.hidden; }
+        }
 
 
     }
